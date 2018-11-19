@@ -5,10 +5,11 @@ import java.util.Set;
 import java.util.Stack;
 
 public class Graph {
-    int vertex;
+    //int vertex;
     
     private static int[][] M;
-    LinkedList<Integer> list[];
+    private static boolean [] visited;
+   // LinkedList<Integer> list[];
     ArrayList<Integer> makerList = new ArrayList<>(); 
     ArrayList<Integer> breakerList = new ArrayList<>(); 
     Set<Integer> hs = new HashSet<>();
@@ -18,22 +19,22 @@ public class Graph {
     public Graph(int vertex) {
         
         M = new int[vertex][vertex];
-        this.vertex = vertex;
+        visited = new boolean[M.length];
         
-        list = new LinkedList[vertex];
+        /*list = new LinkedList[vertex];
         for (int i = 0; i <vertex ; i++) {
             list[i] = new LinkedList<>();
-        }
+        }*/
     }
 
     public void addEdge(int source, int destination, int w){
 
         //add forward edge
-        list[source].addFirst(destination);
+        //list[source].addFirst(destination);
        // list[destination].addFirst(source);
         
         this.M[source][destination] = w;
-        //this.M[destination][source] = w;
+        this.M[destination][source] = w;
         
         
         if(w==1) {
@@ -53,8 +54,8 @@ public class Graph {
     }
     
     public void removeEdge(int source, int destination){         // remove the edge from u to v and the (duplicate) edge from v to u
-        list[source].remove(destination);
-        list[destination].remove(source);
+       /* list[source].remove(destination);
+        list[destination].remove(source);*/
         
     	this.M[source][destination] = 0;
         this.M[destination][source] = 0;
@@ -82,22 +83,22 @@ public class Graph {
 
     public void DFS(){
         //System.out.print("Depth First Traversal: ");
-        boolean[] visited = new boolean[vertex];
+        //boolean[] visited = new boolean[vertex];
         Stack<Integer> stack = new Stack<Integer>();
 
-        for(int startIndex=0; startIndex<vertex; startIndex++){
+        for(int startIndex=0; startIndex<M.length; startIndex++){
             if(visited[startIndex]==false) {
                 stack.push(startIndex);
                 visited[startIndex] = true;
                 while (stack.isEmpty() == false) {
                     int nodeIndex = stack.pop();
-                    //System.out.print(nodeIndex + " ");
-                    LinkedList<Integer> nodeList = list[nodeIndex];
-                    for (int i = 0; i < nodeList.size(); i++) {
-                        int dest = nodeList.get(i);
-                        if (getEdge(startIndex,dest)==1 && visited[dest] == false) {
-                        	stack.push(dest);
-                        	visited[dest] = true;
+                    System.out.print(nodeIndex + " ");
+                    //LinkedList<Integer> nodeList = list[nodeIndex];
+                    for (int i = 0; i < M.length; i++) {
+                       // int dest = nodeList.get(i);
+                        if (getEdge(startIndex,i)==1 && !visited[i]) {
+                        	stack.push(i);
+                        	visited[i] = true;
                         }
                         
                     }
@@ -129,7 +130,7 @@ public class Graph {
         Graph graph = new Graph(6);
         graph.addEdge(0, 3,-1);
         graph.addEdge(0, 2,1);
-        graph.addEdge(1, 2,1);
+        graph.addEdge(1, 2,-1);
         graph.addEdge(3, 1,1);
         graph.addEdge(2, 5,1);
         graph.addEdge(2, 0,1);
