@@ -39,8 +39,7 @@ public class Graph {
         
         if(w==1) {
             // Add v to u's list. 
-        		 
-            makerList.add(destination);
+        	makerList.add(destination);
            	hs.addAll(makerList);
            	makerList.clear();
            	makerList.addAll(hs);
