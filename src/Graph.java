@@ -1,149 +1,118 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.Stack;
-
-public class Graph {
-    //int vertex;
-    
+// Java program to print DFS traversal from a given given graph 
+import java.util.*; 
+  
+// This class represents a directed graph using adjacency list 
+// representation 
+class Graph 
+{ 
+    private int V;   // No. of vertices 
+    static int count;
+  
     private static int[][] M;
-    private static boolean [] visited;
-   // LinkedList<Integer> list[];
-    ArrayList<Integer> makerList = new ArrayList<>(); 
-    ArrayList<Integer> breakerList = new ArrayList<>(); 
+    // Array  of lists for Adjacency List Representation 
+    private LinkedList<Integer> adj[]; 
+    static ArrayList<Integer> makerList = new ArrayList<>(); 
+    ArrayList<Integer> breakerList = new ArrayList<>();
+    static ArrayList<Integer> dfsList = new ArrayList<>();
     Set<Integer> hs = new HashSet<>();
     Set<Integer> hs1 = new HashSet<>();
     
-
-    public Graph(int vertex) {
+    // Constructor 
+    Graph(int v) 
+    { 
+    	M = new int[v][v];
+        V = v; 
+        adj = new LinkedList[v]; 
+        for (int i=0; i<v; ++i) 
+            adj[i] = new LinkedList(); 
+    } 
+  
+    //Function to add an edge into the graph 
+    void addEdge(int v,int u, int w) 
+    { 
+        adj[v].add(u);  // Add w to v's list. 
         
-        M = new int[vertex][vertex];
-        visited = new boolean[M.length];
-        
-        /*list = new LinkedList[vertex];
-        for (int i = 0; i <vertex ; i++) {
-            list[i] = new LinkedList<>();
-        }*/
-    }
-
-    public void addEdge(int source, int destination, int w){
-
-        //add forward edge
-        //list[source].addFirst(destination);
-       // list[destination].addFirst(source);
-        
-        this.M[source][destination] = w;
-        this.M[destination][source] = w;
+        this.M[v][u] = w;
+        //this.M[destination][source] = w;
         
         
         if(w==1) {
             // Add v to u's list. 
-        	makerList.add(destination);
+        		 
+            makerList.add(u);
            	hs.addAll(makerList);
            	makerList.clear();
            	makerList.addAll(hs);
         }
         if(w==(-1)) {
-        	breakerList.add(destination);
+        	breakerList.add(u);
         	hs1.addAll(breakerList);
         	breakerList.clear();
         	breakerList.addAll(hs1);
         }
+    } 
+    int getEdge(int v, int u) {
+    	return M[v][u];
     }
-    
-    public void removeEdge(int source, int destination){         // remove the edge from u to v and the (duplicate) edge from v to u
-       /* list[source].remove(destination);
-        list[destination].remove(source);*/
-        
-    	this.M[source][destination] = 0;
-        this.M[destination][source] = 0;
-    }
-    
-    public int getEdge(int source, int destination){
-
-        return M[source][destination];
-
-    }
-    
-    public boolean isEdge(int source, int destination){            // return true or false depending on whether there is an edge from u to v
-
-        if(M[source][destination] != 0){
-        	
-            return true;
-
-        }else{
-
-            return false;
-
-        }
-
-    }
-
-    public void DFS(){
-        //System.out.print("Depth First Traversal: ");
-        //boolean[] visited = new boolean[vertex];
-        Stack<Integer> stack = new Stack<Integer>();
-
-        for(int startIndex=0; startIndex<M.length; startIndex++){
-            if(visited[startIndex]==false) {
-                stack.push(startIndex);
-                visited[startIndex] = true;
-                while (stack.isEmpty() == false) {
-                    int nodeIndex = stack.pop();
-                    System.out.print(nodeIndex + " ");
-                    //LinkedList<Integer> nodeList = list[nodeIndex];
-                    for (int i = 0; i < M.length; i++) {
-                       // int dest = nodeList.get(i);
-                        if (getEdge(startIndex,i)==1 && !visited[i]) {
-                        	stack.push(i);
-                        	visited[i] = true;
-                        }
-                        
-                    }
-                   
-                    
-                }
-                
-            }
-            
-        }
-        
-        System.out.println();
-    }
-
-   /* public void printGraph(){
-        for (int i = 0; i <vertex ; i++) {
-            LinkedList<Integer> nodeList = list[i];
-            if(nodeList.isEmpty()==false) {
-                System.out.print("source = " + i + " is connected to nodes: ");
-                for (int j = 0; j < nodeList.size(); j++) {
-                    System.out.print(" " + nodeList.get(j));
-                }
-            }
-            System.out.println();
-        }
-    }*/
-
-    public static void main(String[] args) {
-        Graph graph = new Graph(6);
-        graph.addEdge(0, 3,-1);
-        graph.addEdge(0, 2,1);
-        graph.addEdge(1, 2,-1);
-        graph.addEdge(3, 1,1);
-        graph.addEdge(2, 5,1);
-        graph.addEdge(2, 0,1);
-        graph.addEdge(4, 3,1);
-        graph.addEdge(4, 1,-1);
-        graph.addEdge(5, 4, 1);
-        //graph.printGraph();
-        if(graph.makerList.size()==6) {
-        	
-        	graph.DFS();
-        	System.out.println("maker wins");
+  
+    // A function used by DFS 
+    void DFSUtil(int v,boolean visited[]) 
+    { 
+        // Mark the current node as visited and print it 
+        visited[v] = true; 
+        //System.out.print(v+" "); 
+  
+        // Recur for all the vertices adjacent to this vertex 
+        Iterator<Integer> i = adj[v].listIterator(); 
+        while (i.hasNext()) 
+        { 
+            int n = i.next(); 
+            if (!visited[n] && getEdge(v,n)==1) {
+            	count++;
+                DFSUtil(n, visited); }
+        } 
+    } 
+  
+    // The function to do DFS traversal. It uses recursive DFSUtil() 
+    void DFS(int v) 
+    { 
+        // Mark all the vertices as not visited(set as 
+        // false by default in java) 
+        boolean visited[] = new boolean[V]; 
+  
+        // Call the recursive helper function to print DFS traversal 
+        DFSUtil(v, visited); 
+    } 
+  
+    public static void main(String args[]) 
+    { 
+        Graph g = new Graph(6); 
+  
+        g.addEdge(0, 1,1); 
+        g.addEdge(2, 0,1); 
+        g.addEdge(1, 2,1); 
+        g.addEdge(2, 0,-1); 
+        g.addEdge(2, 3,-1); 
+        g.addEdge(3, 4,1); 
+        g.addEdge(4, 5,1);
+        g.addEdge(5, 3,1);
+        g.addEdge(5, 4,-1);
+  
+        System.out.println("Following is Depth First Traversal "+ 
+                           "(starting from vertex 0)"); 
+        if(makerList.size()==6) {
+        	g.DFS(0);
+        	if(count>=5) {
+        		System.out.println("Maker wins");
+        	}
+        	else {
+        		System.out.println("Breaker wins");
+        	}
         }
         else {
         	System.out.println("Breaker wins");
         }
-    }
-}
+  
+         
+    } 
+} 
