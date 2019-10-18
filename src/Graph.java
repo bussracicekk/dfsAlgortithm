@@ -1,24 +1,26 @@
-// Java program to print DFS traversal from a given given graph 
 import java.util.*; 
   
-// This class represents a directed graph using adjacency list 
-// representation 
 class Graph 
 { 
-    private int V;   // No. of vertices 
+    private int V;   // number of all vertices
     static int count;
   
-    private static int[][] M;
-    // Array  of lists for Adjacency List Representation 
+    private static int[][] M;//This array will use for representations of adjacency list
+  
+    //A linked list is a linear data structure, in which the elements are not stored at contiguous memory locations.
+    //a linked list consists of nodes where each node contains a data field and a reference(link) to the next node in the list.
     private LinkedList<Integer> adj[]; 
-    static ArrayList<Integer> makerList = new ArrayList<>(); 
-    ArrayList<Integer> breakerList = new ArrayList<>();
-    static ArrayList<Integer> dfsList = new ArrayList<>();
+    
+    static ArrayList<Integer> makerList = new ArrayList<>(); //this list will use for keeping vertices that maker has
+    ArrayList<Integer> breakerList = new ArrayList<>();//this list will use for keeping vertices that breaker has
+    static ArrayList<Integer> dfsList = new ArrayList<>();//this list will use for depth first search algorithm
+  
+    //HashSet cannot contain duplicate values so we can used the set of the list for deleting duplicate values.
     Set<Integer> hs = new HashSet<>();
     Set<Integer> hs1 = new HashSet<>();
     
-    // Constructor 
-    Graph(int v) 
+    
+    Graph(int v) //constructer of Graph.java
     { 
     	M = new int[v][v];
         V = v; 
@@ -27,22 +29,17 @@ class Graph
             adj[i] = new LinkedList(); 
     } 
   
-    //Function to add an edge into the graph 
-    void addEdge(int v,int u, int w) 
+    void addEdge(int v,int u, int w) //this function is used to add edge into the graph
     { 
         adj[v].add(u);  // Add w to v's list. 
         
         this.M[v][u] = w;
-        //this.M[destination][source] = w;
-        
         
         if(w==1) {
-            // Add v to u's list. 
-        		 
-            makerList.add(u);
-           	hs.addAll(makerList);
-           	makerList.clear();
-           	makerList.addAll(hs);
+            makerList.add(u);//u is added to the maker list
+           	hs.addAll(makerList);//duplicate values are cleared
+           	makerList.clear();//all elements of maker list are deleted
+           	makerList.addAll(hs);//element of hashset is added to the maker list
         }
         if(w==(-1)) {
         	breakerList.add(u);
@@ -54,15 +51,15 @@ class Graph
     int getEdge(int v, int u) {
     	return M[v][u];
     }
-  
-    // A function used by DFS 
+   
     void DFSUtil(int v,boolean visited[]) 
     { 
-        // Mark the current node as visited and print it 
-        visited[v] = true; 
+        visited[v] = true; // Mark the current node as visited and print it 
         //System.out.print(v+" "); 
   
         // Recur for all the vertices adjacent to this vertex 
+        //Iterator is a way to traverse as well as access the data from the collection
+        //and access the data element of collection without bothering the user about specific implementation of that collection it.
         Iterator<Integer> i = adj[v].listIterator(); 
         while (i.hasNext()) 
         { 
@@ -76,8 +73,7 @@ class Graph
     // The function to do DFS traversal. It uses recursive DFSUtil() 
     void DFS(int v) 
     { 
-        // Mark all the vertices as not visited(set as 
-        // false by default in java) 
+        // Mark all the vertices as not visited(set as false by default in java) 
         boolean visited[] = new boolean[V]; 
   
         // Call the recursive helper function to print DFS traversal 
